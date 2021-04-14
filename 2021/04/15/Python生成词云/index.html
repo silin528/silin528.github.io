@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Python生成词云 - 海上月</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+
+  
+  
+  <meta name="description" content="前言最近了解到python 可以做词云，那么下面来玩玩..."> 
+  
+  <meta name="author" content="silin Zreo"> 
+
+  
+    <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  
+  
+    <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  
+  
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  
+  
+    <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_h1619vhl1nr.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css">
+
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        loadingImage: '',
+      },
+      donate: {
+        enable: true,
+        alipay: '/images/icons/apay.png',
+        wechat: '/images/icons/weixinpay.jpg'
+      },
+      motto: {
+        api: '',
+        default: '一个人的行走范围，就是他的世界。'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        alwaysShow: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: true
+      }
+    }
+  </script>
+
+  
+
+  
+  
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+
+
+<nav class="navbar">
+  <div class="left"></div>
+  <div class="center">Python生成词云</div>
+  <div class="right">
+    <i class="iconfont iconmenu j-navbar-menu"></i>
+  </div>
+</nav>
+
+  <nav class="menu">
+  <div class="menu-wrap">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content">
+      
+      
+      
+      
+      <li class="menu-item"><a href="/ " class="underline"> 首页</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/galleries " class="underline"> 摄影</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/archives " class="underline"> 归档</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/tags " class="underline"> 标签</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/categories " class="underline"> 分类</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/about " class="underline"> 关于</a></li>
+      
+    </ul>
+    <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  </div>
+</nav>
+  <main id="main">
+  <div class="container" id="container">
+    <article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="https://images.pexels.com/photos/3567673/pexels-photo-3567673.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">Python生成词云</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>April 15, 2021</span
+        class="post-info-item">
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2571</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近了解到python 可以做词云，那么下面来玩玩看。<br>分析一下红楼梦出现的人物名，并生成自定义图案的词云</p>
+<h1 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1.准备工作"></a>1.准备工作</h1><p>安装需要用到的第三方库</p>
+<ul>
+<li>jieba</li>
+<li>matplotlib</li>
+<li>wordcloud</li>
+<li>imageio<h1 id="2-思路"><a href="#2-思路" class="headerlink" title="2.思路"></a>2.思路</h1>首先先分析清洗数据，提取关键词，然后生成词云<h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3.代码实现"></a>3.代码实现</h1><h3 id="3-1-准备的文件"><a href="#3-1-准备的文件" class="headerlink" title="3.1 准备的文件"></a>3.1 准备的文件</h3>首先需要有这个<code>红楼梦.txt 、star.jpg、stop_words.txt</code>等文件,文章最下面已经给出了获取的链接</li>
+</ul>
+<h3 id="3-2-代码如下："><a href="#3-2-代码如下：" class="headerlink" title="3.2 代码如下："></a>3.2 代码如下：</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs applescript">import jieba<br><br><span class="hljs-comment"># 获取文本</span><br>def getText(filePath):<br>    <span class="hljs-built_in">file</span> = open(filePath,&#x27;r&#x27;,encoding=&#x27;utf<span class="hljs-number">-8</span>&#x27;)<br>    <span class="hljs-built_in">text</span> = <span class="hljs-built_in">file</span>.<span class="hljs-built_in">read</span>()<br>    <span class="hljs-built_in">file</span>.close()<br><span class="hljs-built_in">    return</span> <span class="hljs-built_in">text</span><br><br><span class="hljs-comment"># 提取关键词</span><br>def wordFreq(filePath,<span class="hljs-built_in">text</span>,topn):<br>    <span class="hljs-built_in">words</span> = jieba.lcut(<span class="hljs-built_in">text</span>.strip())<br>    counts=&#123;&#125;<br>    stopwords = stopwordslist(&#x27;./stop_words.txt&#x27;)<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">word</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">words</span>:<br>        <span class="hljs-keyword">if</span> len(<span class="hljs-built_in">word</span>) == <span class="hljs-number">1</span>:<br>            <span class="hljs-keyword">continue</span><br>        elif <span class="hljs-built_in">word</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> stopwords:<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">word</span> == <span class="hljs-string">&quot;凤儿姐&quot;</span>:<br>                <span class="hljs-built_in">word</span>=<span class="hljs-string">&quot;凤姐&quot;</span><br>            elif <span class="hljs-built_in">word</span> == <span class="hljs-string">&quot;林黛玉&quot;</span> <span class="hljs-keyword">or</span> <span class="hljs-built_in">word</span>==<span class="hljs-string">&quot;林妹妹&quot;</span> <span class="hljs-keyword">or</span> <span class="hljs-built_in">word</span>==<span class="hljs-string">&quot;黛玉笑&quot;</span>:<br>                <span class="hljs-built_in">word</span>=<span class="hljs-string">&quot;黛玉&quot;</span><br>            elif <span class="hljs-built_in">word</span>==<span class="hljs-string">&quot;宝二爷&quot;</span>:<br>                <span class="hljs-built_in">word</span>=<span class="hljs-string">&quot;宝玉&quot;</span><br>            elif <span class="hljs-built_in">word</span>==<span class="hljs-string">&quot;裘人道&quot;</span>:<br>                <span class="hljs-built_in">word</span>=<span class="hljs-string">&quot;裘人&quot;</span><br>            <span class="hljs-keyword">else</span>:<br>                counts[<span class="hljs-built_in">word</span>] = counts.<span class="hljs-keyword">get</span>(<span class="hljs-built_in">word</span>,<span class="hljs-number">0</span>)+<span class="hljs-number">1</span><br>    items = <span class="hljs-built_in">list</span>(counts.items())<br>    items.sort(key= lambda x:x[<span class="hljs-number">1</span>], <span class="hljs-built_in">reverse</span>=True)<br>    f = open(filePath[:<span class="hljs-number">-4</span>]+&#x27;_词频.txt&#x27;,&#x27;w&#x27;)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(topn):<br>        <span class="hljs-built_in">word</span>, <span class="hljs-built_in">count</span> = items[i]<br>        f.writelines(<span class="hljs-string">&quot;&#123;&#125;\t&#123;&#125;\n&quot;</span>.format(<span class="hljs-built_in">word</span>,<span class="hljs-built_in">count</span>))<br>    f.close()<br><br><span class="hljs-comment"># 过滤一些词</span><br>def stopwordslist(filePath):<br>    stopwords = [line.strip() <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> open(filePath,&#x27;r&#x27;,encoding=&#x27;utf<span class="hljs-number">-8</span>&#x27;).readlines()]<br><span class="hljs-built_in">    return</span> stopwords<br><br>filePath=<span class="hljs-string">&quot;./红楼梦.txt&quot;</span><br><span class="hljs-built_in">text</span> = getText(filePath)<br>print(<span class="hljs-built_in">text</span>)<br>print(filePath)<br>wordFreq(filePath,<span class="hljs-built_in">text</span>,<span class="hljs-number">30</span>)<br></code></pre></td></tr></table></figure>
+<p>执行代码后，得到一个<code>红楼梦_词频.txt</code>文件。</p>
+<p>那么接下来就是生成词云图片</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> wordcloud<br># <span class="hljs-keyword">from</span> scipy.misc <span class="hljs-keyword">import</span> imread<br><span class="hljs-keyword">from</span> imageio <span class="hljs-keyword">import</span> imread<br><br>bg_pic=imread(<span class="hljs-string">&#x27;./star.jpg&#x27;</span>)<br>f = <span class="hljs-keyword">open</span>(&quot;./红楼梦_词频.txt&quot;,<span class="hljs-string">&#x27;r&#x27;</span>)<br><span class="hljs-type">text</span> = f.<span class="hljs-keyword">read</span>()<br>f.<span class="hljs-keyword">close</span>()<br>dictText= []<br><span class="hljs-keyword">temp</span>=[]<br>count = <span class="hljs-number">0</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(len(<span class="hljs-type">text</span>)):<br>    <span class="hljs-keyword">if</span> <span class="hljs-type">text</span>[i] == <span class="hljs-string">&#x27;\n&#x27;</span>:<br>        <span class="hljs-keyword">temp</span> = <span class="hljs-type">text</span>[:i].split()<br>        dictText.append((<span class="hljs-keyword">temp</span>[count],<span class="hljs-type">float</span>(<span class="hljs-keyword">temp</span>[count+<span class="hljs-number">1</span>])))<br>        count += <span class="hljs-number">2</span><br><br>wcloud = wordcloud.WordCloud(<br>    background_color=&quot;white&quot;,<br>    width=<span class="hljs-number">1000</span>,<br>    height=<span class="hljs-number">860</span>,<br>    max_words=<span class="hljs-number">50</span>,<br>    margin=<span class="hljs-number">1</span>,<br>    font_path=<span class="hljs-string">&#x27;C:\Windows\Fonts\STXINGKA.ttf&#x27;</span>,<br>    mask = bg_pic,<br><br>).fit_words(dict(dictText))<br>plt.imshow(wcloud)<br>plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br>plt.<span class="hljs-keyword">show</span>()<br></code></pre></td></tr></table></figure>
+
+<p>执行之后得到这样子的效果：<br><img   class="lazyload" data-original="https://upload-images.jianshu.io/upload_images/16767903-d4ecd3aa857772c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  alt="image.png"></p>
+<p>代码资料链接如下：<br><a target="_blank" rel="noopener" href="https://github.com/silin528/python/tree/main/%E8%AF%8D%E4%BA%91">https://github.com/silin528/python/tree/main/%E8%AF%8D%E4%BA%91</a></p>
+
+      </section>
+      <section class="extra">
+        
+        <ul class="copyright">
+  
+  <li><strong>本文作者：</strong>silin Zreo</li>
+  <li><strong>本文链接：</strong><a href="http://blog.ggcmll.xyz/2021/04/15/Python%E7%94%9F%E6%88%90%E8%AF%8D%E4%BA%91/index.html">http://blog.ggcmll.xyz/2021/04/15/Python%E7%94%9F%E6%88%90%E8%AF%8D%E4%BA%91/index.html</a></li>
+  <li><strong>版权声明：</strong>本博客所有文章均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
+      rel="external nofollow" target="_blank"> BY-NC-SA </a>许可协议，转载请注明出处！</li>
+  
+</ul>
+        
+        
+        <section class="donate">
+  <div class="qrcode">
+    <img   class="lazyload" data-original="/images/icons/apay.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+        
+<nav class="nav">
+  
+  
+    <a href="/2021/03/20/Mybatis-plus%E4%B9%8B%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/">Mybatis-plus之代码生成器<i class="iconfont iconright"></i></a>
+  
+</nav>
+
+      </section>
+      
+      <section class="comments">
+  
+  <div class="btn" id="comments-btn">查看评论</div>
+  
+  
+</section>
+      
+    </section>
+  </div>
+</article>
+  </div>
+</main>
+  <footer class="footer">
+  <div class="footer-social">
+    
+    
+    
+    
+    
+    <a href="tencent://message/?Menu=yes&uin=1171087511 " target="_blank" onMouseOver="this.style.color= '#12B7F5'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconQQ "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="javascript:; " target="_blank" onMouseOver="this.style.color= '#09BB07'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconwechat-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="https://github.com/silin528 " target="_blank" onMouseOver="this.style.color= '#24292E'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  icongithub-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="silin_liu528@126.com " target="_blank" onMouseOver="this.style.color='#FFBE5B'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconmail"></i>
+    </a>
+    
+  </div>
+  <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  <div class="fab fab-daovoice">
+    <i class="iconfont iconcomment"></i>
+  </div>
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+</body>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/modules.js"></script>
+<script src="/js/zui.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i["DaoVoiceObject"] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    a.charset = "utf-8";
+    m.parentNode.insertBefore(a, m)
+  })(window, document, "script", ('https:' == document.location.protocol ? 'https:' : 'http:') +
+    "//widget.daovoice.io/widget/0f81ff2f.js", "daovoice")
+  daovoice('init', {
+    app_id: "abcdefg"
+  }, {
+    launcher: {
+      disableLauncherIcon: true,
+    },
+  });
+  daovoice('update');
+</script>
+
+
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4c204d8bc027a0455b5fc642ac334ca8";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+
+
+
+
+</html>
