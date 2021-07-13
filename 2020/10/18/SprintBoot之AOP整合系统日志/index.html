@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SprintBoot之AOP整合系统日志 - 海上月</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+
+  
+  
+  <meta name="description" content="前言涉及到的技术：SpringBoot、MySQL、S..."> 
+  
+  <meta name="author" content="silin Zreo"> 
+
+  
+    <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  
+  
+    <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  
+  
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  
+  
+    <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_h1619vhl1nr.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css">
+
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        loadingImage: '',
+      },
+      donate: {
+        enable: true,
+        alipay: '/images/icons/apay.png',
+        wechat: '/images/icons/weixinpay.jpg'
+      },
+      motto: {
+        api: '',
+        default: '一个人的行走范围，就是他的世界。'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        alwaysShow: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: true
+      }
+    }
+  </script>
+
+  
+
+  
+  < if (theme.baidustatistic.enable){ >
+  <- partial('post/baidustatistic') >
+  < } >
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+
+
+<nav class="navbar">
+  <div class="left"></div>
+  <div class="center">SprintBoot之AOP整合系统日志</div>
+  <div class="right">
+    <i class="iconfont iconmenu j-navbar-menu"></i>
+  </div>
+</nav>
+
+  <nav class="menu">
+  <div class="menu-wrap">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content">
+      
+      
+      
+      
+      <li class="menu-item"><a href="/ " class="underline"> 首页</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/galleries " class="underline"> 摄影</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/archives " class="underline"> 归档</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/tags " class="underline"> 标签</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/categories " class="underline"> 分类</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/about " class="underline"> 关于</a></li>
+      
+    </ul>
+    <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  </div>
+</nav>
+  <main id="main">
+  <div class="container" id="container">
+    <article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="https://images.pexels.com/photos/2508803/pexels-photo-2508803.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">SprintBoot之AOP整合系统日志</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>October 18, 2020</span
+        class="post-info-item">
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>10263</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>涉及到的技术：<code>SpringBoot</code>、<code>MySQL</code>、<code>Spring-Data-JPA</code></p>
+<p>AOP指面向切面</p>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>通过aop，将每次请求的信息，记录保存到数据库中去。</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>我们先建立一张数据库表<code>sys_log</code>,代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs routeros">DROP TABLE <span class="hljs-keyword">IF</span> EXISTS `sys_log`;<br>CREATE TABLE `sys_log` (<br>  `id` varchar(64) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,<br>  `class_name` varchar(64)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `method_name` varchar(64)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `params` varchar(255)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `exec_time` longblob,<br>  `remark` varchar(64)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `create_date` varchar(64)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `url` varchar(255)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `ip` varchar(64)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  `http_method` varchar(100)<span class="hljs-built_in"> DEFAULT </span><span class="hljs-literal">NULL</span>,<br>  PRIMARY KEY (`id`)<br>) <span class="hljs-attribute">ENGINE</span>=InnoDB<span class="hljs-built_in"> DEFAULT </span><span class="hljs-attribute">CHARSET</span>=utf8;<br><br></code></pre></td></tr></table></figure>
+<h2 id="目录结构："><a href="#目录结构：" class="headerlink" title="目录结构："></a>目录结构：</h2><p>项目的目录结构，如下：</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">├─src<br>     ├─main<br>       ├─java<br>       │  └─com<br>       │      └─seamoon<br>       │          ├─<span class="hljs-keyword">aspect</span><br>       │          ├─controller<br>       │          ├─domain<br>       │          ├─interfaceAnnotation<br>       │          ├─repository<br>       │          └─service<br>       │                  └─Impl<br>       └─resources<br>           ├─<span class="hljs-keyword">static</span><br>           └─templates<br></code></pre></td></tr></table></figure>
+
+<h2 id="主要代码"><a href="#主要代码" class="headerlink" title="主要代码"></a>主要代码</h2><p>通过Maven引入一些jar,比如：数据库驱动，JPA,AOP,hutool工具包<br><code>pom.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-data-jpa<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-aop<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>runtime<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>cn.hutool<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hutool-all<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>5.4.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.google.code.gson<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>gson<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.8.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>配置完jar,写写配置文件,这里小编采用了yml后缀文件的格式:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-attribute">spring</span>:<br>  <span class="hljs-attribute">datasource</span>:<br>    <span class="hljs-attribute">driver-class-name</span>: com.mysql.cj.jdbc.Driver<br>    <span class="hljs-attribute">url</span>: <span class="hljs-attribute">jdbc</span>:<span class="hljs-attribute">mysql</span>:<span class="hljs-comment">//localhost:3306/sys?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=true&amp;serverTimezone=UTC</span><br>    <span class="hljs-attribute">username</span>: root<br>    <span class="hljs-attribute">password</span>: root<br><br>    <span class="hljs-attribute">jpa</span>:<br>      <span class="hljs-attribute">hibernate</span>:<br>        <span class="hljs-attribute">ddl-auto</span>: update<br>      <span class="hljs-attribute">show-sql</span>: true<br></code></pre></td></tr></table></figure>
+
+
+<p><code>sysLog.java</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs typescript">package com.seamoon.aop.domain;<br><br><br><span class="hljs-keyword">import</span> jdk.internal.vm.annotation.Stable;<br><span class="hljs-keyword">import</span> lombok.Data;<br><br><span class="hljs-keyword">import</span> javax.persistence.Column;<br><span class="hljs-keyword">import</span> javax.persistence.Entity;<br><span class="hljs-keyword">import</span> javax.persistence.Id;<br><span class="hljs-keyword">import</span> javax.persistence.Table;<br><br><span class="hljs-meta">@Entity</span><br><span class="hljs-meta">@Data</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> SysLog &#123;<br><br>    <span class="hljs-meta">@Id</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> id;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 类名</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> className;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 方法名</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> methodName;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 参数</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> params;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 执行时间</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> Long execTime;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 切面标记</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> remark;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 创建时间</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> createDate;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 请求URL</span><br><span class="hljs-comment">    * */</span><br><span class="hljs-comment">//    @Column(nullable = false)</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> url;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * 请求IP</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> ip;<br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    * http method</span><br><span class="hljs-comment">    * */</span><br>    <span class="hljs-meta">@Column</span>(nullable = <span class="hljs-literal">false</span>)<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">String</span> httpMethod;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><code>SysLogRepository.java</code></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">package</span> <span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.seamoon</span><span class="hljs-selector-class">.aop</span><span class="hljs-selector-class">.repository</span>;<br><br><span class="hljs-selector-tag">import</span> <span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.seamoon</span><span class="hljs-selector-class">.aop</span><span class="hljs-selector-class">.domain</span><span class="hljs-selector-class">.SysLog</span>;<br><span class="hljs-selector-tag">import</span> <span class="hljs-selector-tag">org</span><span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.jpa</span><span class="hljs-selector-class">.repository</span><span class="hljs-selector-class">.JpaRepository</span>;<br><br><span class="hljs-selector-tag">public</span> <span class="hljs-selector-tag">interface</span> <span class="hljs-selector-tag">SysLogRepository</span> <span class="hljs-selector-tag">extends</span> <span class="hljs-selector-tag">JpaRepository</span>&lt;<span class="hljs-selector-tag">SysLog</span>,<span class="hljs-selector-tag">String</span>&gt; &#123;<br><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><code>SysLogService.java</code></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs routeros">package com.seamoon.aop.service;<br><br>import com.seamoon.aop.domain.SysLog;<br><br>public<span class="hljs-built_in"> interface </span>SysLogService &#123;<br><br>    boolean saveSysLog(SysLog sysLog);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><code>SysLogServiceImpl.java</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.seamoon.aop.service.Impl;<br><br><span class="hljs-keyword">import</span> com.seamoon.aop.domain.SysLog;<br><span class="hljs-keyword">import</span> com.seamoon.aop.repository.SysLogRepository;<br><span class="hljs-keyword">import</span> com.seamoon.aop.service.SysLogService;<br><span class="hljs-keyword">import</span> lombok.extern.slf4j.Slf4j;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Autowired;<br><span class="hljs-keyword">import</span> org.springframework.stereotype.Service;<br><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SysLogServiceImpl</span>  <span class="hljs-keyword">implements</span> <span class="hljs-title">SysLogService</span> </span>&#123;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> SysLogRepository sysLogRepository;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">saveSysLog</span><span class="hljs-params">(SysLog sysLog)</span> </span>&#123;<br>        sysLogRepository.save(sysLog);<br><span class="hljs-comment">//        log.info(sysLog.getParams());</span><br>        log.info(<span class="hljs-string">&quot;成功&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>SysLogAnnotation.java</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.seamoon.aop.interfaceAnnotation;<br><br><span class="hljs-keyword">import</span> java.lang.annotation.*;<br><br><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> SysLogAnnotation &#123;<br>    <span class="hljs-function">String <span class="hljs-title">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> &quot;&quot;</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><code>SysLogAspect.java</code></p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">package com.seamoon.aop.aspect;<br><br>import cn.hutool.core.util.IdUtil;<br>import com.google.gson.Gson;<br>import com.seamoon.aop.domain.SysLog;<br>import com.seamoon.aop.interfaceAnnotation.SysLogAnnotation;<br>import com.seamoon.aop.service.SysLogService;<br>import org.aspectj.lang.ProceedingJoinPoint;<br>import org.aspectj.lang.annotation.Around;<br>import org.aspectj.lang.annotation.Aspect;<br>import org.aspectj.lang.annotation.Pointcut;<br>import org.aspectj.lang.reflect.MethodSignature;<br>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Component;<br>import org.springframework.web.context.request.RequestContextHolder;<br>import org.springframework.web.context.request.ServletRequestAttributes;<br><br>import javax.servlet.http.HttpServletRequest;<br>import java.lang.reflect.Method;<br>import java.text.SimpleDateFormat;<br>import java.util.ArrayList;<br>import java.util.Date;<br>import java.util.List;<br><br>@Aspect<br>@Component<br>public <span class="hljs-keyword">class</span> SysLogAspect &#123;<br>    @Autowired<br>    <span class="hljs-keyword">private</span> SysLogService sysLogService;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 这里我们使用注解的形式</span><br><span class="hljs-comment">     * 当然，我们也可以通过切点表达式直接指定需要拦截的package,需要拦截的class 以及 method</span><br><span class="hljs-comment">     * 切点表达式:   execution(...)</span><br><span class="hljs-comment">     * 例如：execution(public * com.example.demo.controller.*.*(..))</span><br><span class="hljs-comment">     */</span><br>    @<span class="hljs-constructor">Pointcut(<span class="hljs-string">&quot;@annotation(com.seamoon.aop.interfaceAnnotation.SysLogAnnotation)&quot;</span>)</span><br>    public void log<span class="hljs-constructor">PointCut()</span> &#123;&#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 环绕通知 @Around  ， 当然也可以使用 @Before (前置通知)  @After (后置通知)</span><br><span class="hljs-comment">     * @param point</span><br><span class="hljs-comment">     * @return</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * @throws Throwable</span><br><span class="hljs-comment">     */</span><br>    @<span class="hljs-constructor">Around(<span class="hljs-string">&quot;logPointCut()&quot;</span>)</span><br>    public Object around(ProceedingJoinPoint point) throws Throwable &#123;<br>        long beginTime = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>current<span class="hljs-constructor">TimeMillis()</span>;<br>        Object result = point.proceed<span class="hljs-literal">()</span>;<br>        long time = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>current<span class="hljs-constructor">TimeMillis()</span> - beginTime;<br>        <span class="hljs-keyword">try</span> &#123;<br>            save<span class="hljs-constructor">Log(<span class="hljs-params">point</span>, <span class="hljs-params">time</span>)</span>;<br>        &#125; catch (Exception e) &#123;<br>        &#125;<br>        return result;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 保存日志</span><br><span class="hljs-comment">     * @param joinPoint</span><br><span class="hljs-comment">     * @param time</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> void save<span class="hljs-constructor">Log(ProceedingJoinPoint <span class="hljs-params">joinPoint</span>, <span class="hljs-params">long</span> <span class="hljs-params">time</span>)</span> &#123;<br>        SysLog sysLog = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SysLog()</span>;<br>        <span class="hljs-comment">//获取请求url,ip,httpMethod</span><br>        ServletRequestAttributes attributes = (ServletRequestAttributes) <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">RequestContextHolder</span>.</span></span>get<span class="hljs-constructor">RequestAttributes()</span>;<br>        HttpServletRequest request = attributes.get<span class="hljs-constructor">Request()</span>;<br>        String ip = request.get<span class="hljs-constructor">RemoteAddr()</span>;<br>        String httpMethod = request.get<span class="hljs-constructor">Method()</span>;<br>        String url = request.get<span class="hljs-constructor">RequestURL()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">String()</span>;<br>        sysLog.set<span class="hljs-constructor">Ip(<span class="hljs-params">ip</span>)</span>;<br>        sysLog.set<span class="hljs-constructor">HttpMethod(<span class="hljs-params">httpMethod</span>)</span>;<br>        sysLog.set<span class="hljs-constructor">Url(<span class="hljs-params">url</span>)</span>;<br>        sysLog.set<span class="hljs-constructor">Id(IdUtil.<span class="hljs-params">randomUUID</span>()</span>);<br><br>        MethodSignature signature = (MethodSignature) joinPoint.get<span class="hljs-constructor">Signature()</span>;<br>        Method <span class="hljs-keyword">method</span> = signature.get<span class="hljs-constructor">Method()</span>;<br><br>        sysLog.set<span class="hljs-constructor">ExecTime(<span class="hljs-params">time</span>)</span>;<br>        SimpleDateFormat dateFormat = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>)</span>;<br>        sysLog.set<span class="hljs-constructor">CreateDate(<span class="hljs-params">dateFormat</span>.<span class="hljs-params">format</span>(<span class="hljs-params">new</span> Date()</span>));<br>        SysLogAnnotation annotation = <span class="hljs-keyword">method</span>.get<span class="hljs-constructor">Annotation(SysLogAnnotation.<span class="hljs-params">class</span>)</span>;<br>        <span class="hljs-keyword">if</span>(annotation != null)&#123;<br>            <span class="hljs-comment">//注解上的描述</span><br>            sysLog.set<span class="hljs-constructor">Remark(<span class="hljs-params">annotation</span>.<span class="hljs-params">value</span>()</span>);<br>        &#125;<br>        <span class="hljs-comment">//请求的 类名、方法名</span><br>        String className = joinPoint.get<span class="hljs-constructor">Target()</span>.get<span class="hljs-constructor">Class()</span>.get<span class="hljs-constructor">Name()</span>;<br>        String methodName = signature.get<span class="hljs-constructor">Name()</span>;<br>        sysLog.set<span class="hljs-constructor">ClassName(<span class="hljs-params">className</span>)</span>;<br>        sysLog.set<span class="hljs-constructor">MethodName(<span class="hljs-params">methodName</span>)</span>;<br>        <span class="hljs-comment">//请求的参数</span><br>        Object<span class="hljs-literal">[]</span> args = joinPoint.get<span class="hljs-constructor">Args()</span>;<br>        <span class="hljs-keyword">try</span>&#123;<br>            List&lt;String&gt; <span class="hljs-built_in">list</span> = <span class="hljs-keyword">new</span> ArrayList&lt;String&gt;<span class="hljs-literal">()</span>;<br>            <span class="hljs-keyword">for</span> (Object o : args) &#123;<br>                <span class="hljs-built_in">list</span>.add(<span class="hljs-keyword">new</span> <span class="hljs-constructor">Gson()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">Json(<span class="hljs-params">o</span>)</span>);<br>            &#125;<br>            sysLog.set<span class="hljs-constructor">Params(<span class="hljs-params">list</span>.<span class="hljs-params">toString</span>()</span>);<br>        &#125;catch (Exception e)&#123; &#125;<br>        sysLogService.save<span class="hljs-constructor">SysLog(<span class="hljs-params">sysLog</span>)</span>;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>TestController.java</code></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">package</span> com.seamoon.aop.controller;<br><br><span class="hljs-keyword">import</span> com.seamoon.aop.interfaceAnnotation.SysLogAnnotation;<br><span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;<br><span class="hljs-keyword">import</span> org.springframework.web.bind.<span class="hljs-keyword">annotation</span>.*;<br><br><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(<span class="hljs-meta-string">&quot;/test&quot;</span>)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestController</span> </span>&#123;<br><br>    <span class="hljs-meta">@SysLogAnnotation(<span class="hljs-meta-string">&quot;切面测试&quot;</span>)</span><br>    <span class="hljs-meta">@GetMapping(<span class="hljs-meta-string">&quot;/test&quot;</span>)</span><br>    <span class="hljs-keyword">public</span> String test(<span class="hljs-meta">@RequestParam(<span class="hljs-meta-string">&quot;name&quot;</span>)</span> String name) &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;sys-name:&quot;</span>+name);<br>        <span class="hljs-keyword">return</span> name;<br>    &#125;<br><br>    <span class="hljs-meta">@GetMapping(<span class="hljs-meta-string">&quot;/v&quot;</span>)</span><br>    <span class="hljs-keyword">public</span> String index()&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;sueccs&quot;</span>;<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>通过访问<code>http://127.0.0.1:8080/test/test?name=123</code>,查询数据库，得出数据。</p>
+<h1 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h1><p>感谢您到来，如对您有帮助，请给小编一点温暖~~</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1380075991&auto=1&height=66"></iframe>
+      </section>
+      <section class="extra">
+        
+        <ul class="copyright">
+  
+  <li><strong>本文作者：</strong>silin Zreo</li>
+  <li><strong>本文链接：</strong><a href="http://blog.ggcmll.xyz/2020/10/18/SprintBoot%E4%B9%8BAOP%E6%95%B4%E5%90%88%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97/index.html">http://blog.ggcmll.xyz/2020/10/18/SprintBoot%E4%B9%8BAOP%E6%95%B4%E5%90%88%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97/index.html</a></li>
+  <li><strong>版权声明：</strong>本博客所有文章均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
+      rel="external nofollow" target="_blank"> BY-NC-SA </a>许可协议，转载请注明出处！</li>
+  
+</ul>
+        
+        
+        <section class="donate">
+  <div class="qrcode">
+    <img   class="lazyload" data-original="/images/icons/apay.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li></ul>
+
+        
+<nav class="nav">
+  
+    <a href="/2020/10/20/linux%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"><i class="iconfont iconleft"></i>linux基本命令</a>
+  
+  
+</nav>
+
+      </section>
+      
+      <section class="comments">
+  
+  <div class="btn" id="comments-btn">查看评论</div>
+  
+  
+</section>
+      
+    </section>
+  </div>
+</article>
+  </div>
+</main>
+  <footer class="footer">
+  <div class="footer-social">
+    
+    
+    
+    
+    
+    <a href="tencent://message/?Menu=yes&uin=1171087511 " target="_blank" onMouseOver="this.style.color= '#12B7F5'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconQQ "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="javascript:; " target="_blank" onMouseOver="this.style.color= '#09BB07'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconwechat-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="https://github.com/silin528 " target="_blank" onMouseOver="this.style.color= '#24292E'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  icongithub-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="silin_liu528@126.com " target="_blank" onMouseOver="this.style.color='#FFBE5B'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconmail"></i>
+    </a>
+    
+  </div>
+  <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  <div class="fab fab-daovoice">
+    <i class="iconfont iconcomment"></i>
+  </div>
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+</body>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/modules.js"></script>
+<script src="/js/zui.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i["DaoVoiceObject"] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    a.charset = "utf-8";
+    m.parentNode.insertBefore(a, m)
+  })(window, document, "script", ('https:' == document.location.protocol ? 'https:' : 'http:') +
+    "//widget.daovoice.io/widget/0f81ff2f.js", "daovoice")
+  daovoice('init', {
+    app_id: "abcdefg"
+  }, {
+    launcher: {
+      disableLauncherIcon: true,
+    },
+  });
+  daovoice('update');
+</script>
+
+
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4c204d8bc027a0455b5fc642ac334ca8";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+
+
+
+
+</html>

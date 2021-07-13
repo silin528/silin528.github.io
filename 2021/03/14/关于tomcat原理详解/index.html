@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>关于tomcat原理详解 - 海上月</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+
+  
+  
+  <meta name="description" content="
+前言Tomcat 服务器是一个免费的开放源代码的We..."> 
+  
+  <meta name="author" content="silin Zreo"> 
+
+  
+    <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  
+  
+    <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  
+  
+    <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  
+  
+    <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_h1619vhl1nr.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+  
+  
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css">
+
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        loadingImage: '',
+      },
+      donate: {
+        enable: true,
+        alipay: '/images/icons/apay.png',
+        wechat: '/images/icons/weixinpay.jpg'
+      },
+      motto: {
+        api: '',
+        default: '一个人的行走范围，就是他的世界。'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        alwaysShow: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: true
+      }
+    }
+  </script>
+
+  
+
+  
+  < if (theme.baidustatistic.enable){ >
+  <- partial('post/baidustatistic') >
+  < } >
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+
+
+<nav class="navbar">
+  <div class="left"></div>
+  <div class="center">关于tomcat原理详解</div>
+  <div class="right">
+    <i class="iconfont iconmenu j-navbar-menu"></i>
+  </div>
+</nav>
+
+  <nav class="menu">
+  <div class="menu-wrap">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content">
+      
+      
+      
+      
+      <li class="menu-item"><a href="/ " class="underline"> 首页</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/galleries " class="underline"> 摄影</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/archives " class="underline"> 归档</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/tags " class="underline"> 标签</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/categories " class="underline"> 分类</a></li>
+      
+      
+      
+      
+      <li class="menu-item"><a href="/about " class="underline"> 关于</a></li>
+      
+    </ul>
+    <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  </div>
+</nav>
+  <main id="main">
+  <div class="container" id="container">
+    <article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="https://images.pexels.com/photos/4398434/pexels-photo-4398434.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">关于tomcat原理详解</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>March 14, 2021</span
+        class="post-info-item">
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>7745</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于轻量级应用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%9C%8D%E5%8A%A1%E5%99%A8">服务器</a>，在中小型系统和并发访问用户不是很多的场合下被普遍使用，是开发和调试JSP 程序的首选。<br>对于一个初学者来说，可以这样认为，当在一台机器上配置好Apache 服务器，可利用它响应<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/HTML">HTML</a>（<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%A0%87%E5%87%86%E9%80%9A%E7%94%A8%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80/6805073">标准通用标记语言</a>下的一个应用）页面的访问请求。实际上Tomcat是Apache 服务器的扩展，但运行时它是独立运行的，所以当你运行tomcat 时，它实际上作为一个与Apache 独立的进程单独运行的。<br>其官网下载地址：<a target="_blank" rel="noopener" href="http://tomcat.apache.org/">http://tomcat.apache.org/</a>  </p>
+<hr>
+<h1 id="Tomcat-目录结构"><a href="#Tomcat-目录结构" class="headerlink" title="Tomcat 目录结构"></a>Tomcat 目录结构</h1><p>Tomcat</p>
+<ul>
+<li>| — bin  ：存放启动和关闭的文件</li>
+<li>| — conf  ：存放不同的配置文件（server.xml 和 web.xml）</li>
+<li>| — doc  ：存放Tomcat文档</li>
+<li>| — lib/japser/common : 存放Tomcat运行所需要的库文件（JARS）</li>
+<li>| — logs ：存放Tomcat执行时的Log文件</li>
+<li>| — src  ：存放Tomcat的源码</li>
+<li>| — webapps：Tomcat的主要web发布目录</li>
+<li>| — work ：存放jsp编译后产生class文件</li>
+</ul>
+<hr>
+<h1 id="Tomcat配置文件："><a href="#Tomcat配置文件：" class="headerlink" title="Tomcat配置文件："></a>Tomcat配置文件：</h1><p>我们打开conf文件夹可以看到Tomcat的配置文件：<br>server.xml、web.xml、tomcat-user.xml、catalina.policy、catalina.properties、logging.properties、context.xml。</p>
+<p>那么，这些文件的作用是什么呢？</p>
+<ul>
+<li><p>查看server.xml文件，它是Tomcat的主配置文件，包含Service, Connector, Engine, Realm, Valve, Hosts主组件的相关配置信息。</p>
+</li>
+<li><p>查看web.xml文件，它遵循Servlet规范标准的配置文件，用于配置servlet，并为所有的Web应用程序提供包括MIME映射等默认配置信息</p>
+</li>
+<li><p>查看tomcat-user.xml文件，在Realm认证时用到的相关角色、用户和密码等信息；Tomcat自带的manager默认情况下会用到此文件；在Tomcat中添加/删除用户，为用户指定角色等将通过编辑此文件实现；</p>
+</li>
+<li><p>查看catalina.policy文件，为Java相关的安全策略配置文件，在系统资源级别上提供访问控制的能力；</p>
+</li>
+<li><p>查看catalina.properties文件，为Tomcat内部package的定义及访问相关控制，也包括对通过类装载器装载的内容的控制；Tomcat在启动时会事先读取此文件的相关设置；</p>
+</li>
+<li><p>查看logging.properties文件，为Tomcat通过自己内部实现的JAVA日志记录器来记录操作相关的日志，此文件即为日志记录器相关的配置信息，可以用来定义日志记录的组件级别以及日志文件的存在位置等；</p>
+</li>
+<li><p>查看context.xml文件，为所有host的默认配置信息；</p>
+</li>
+</ul>
+<h1 id="Tomcat顶层架构"><a href="#Tomcat顶层架构" class="headerlink" title="Tomcat顶层架构"></a>Tomcat顶层架构</h1><p><img   class="lazyload" data-original="https://upload-images.jianshu.io/upload_images/16767903-4d335ec7ec052672.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/558/format/webp" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+　</p>
+<p><strong>1、Server组件</strong><br><code>&lt;Server port=”8005” shutdown=”SHUTDOWN”&gt;</code></p>
+<p>这会让Tomcat启动一个<code>server</code>实例（即一个<code>JVM</code>），它监听在8005端口以接收<code>shutdown</code>命令，使用 <code>telnet</code> 连接8005 端口可以直接执行 <code>SHUTDOWN</code> 命令来关闭 Tomcat。</p>
+<p>各<code>Server</code>的定义不能使用同一个端口，这意味着如果在同一个物理机上启动了多个<code>Server</code>实例，必须配置它们使用不同的端口。这个端口的定义用于为管理员提供一个关闭此实例的便捷途径，因此，管理员可以直接<code>telnet</code>至此端口使用<code>SHUTDOWN</code>命令关闭此实例。不过，基于安全角度的考虑，这通常不允许远程进行。</p>
+<p>Server的相关属性：</p>
+<blockquote>
+<p><code>className</code>: 用于实现此Server容器的完全限定类的名称，默认为<code>org.apache.catalina.core.StandardServer</code>；</p>
+</blockquote>
+<blockquote>
+<p><code>port</code>: 接收<code>shutdown</code>指令的端口，默认仅允许通过本机访问，默认为8005；</p>
+</blockquote>
+<blockquote>
+<p><code>shutdown</code>：发往此<code>Server</code>用于实现关闭tomcat实例的命令字符串，默认为<code>SHUTDOWN</code>；</p>
+</blockquote>
+<p><strong>2、Service组件：</strong></p>
+<p>Service主要用于关联一个引擎和与此引擎相关的连接器，每个连接器通过一个特定的端口和协议接收入站请求交将其转发至关联的引擎进行处理。困此，Service要包含一个引擎、一个或多个连接器。</p>
+<p>如上面示例中的定义：</p>
+<p><code>&lt;Service name=”Catalina”&gt;</code></p>
+<p>这定义了一个名为<code>Catalina</code>的<code>Service</code>，此名字也会在产生相关的日志信息时记录在日志文件当中。</p>
+<p>Service相关的属性：</p>
+<blockquote>
+<p><code>className</code>： 用于实现service的类名，一般都是<code>org.apache.catalina.core.StandardService</code>。</p>
+</blockquote>
+<blockquote>
+<p><code>name</code>：此服务的名称，默认为<code>Catalina</code>；</p>
+</blockquote>
+<p><strong>3、Connector组件：</strong></p>
+<p>进入Tomcat的请求可以根据Tomcat的工作模式分为如下两类：</p>
+<p>Tomcat作为应用程序服务器：请求来自于前端的web服务器，这可能是Apache, <a target="_blank" rel="noopener" href="http://www.ttlsa.com/iis/" title="iis">IIS</a>, <a target="_blank" rel="noopener" href="http://www.ttlsa.com/nginx/" title="nginx">Nginx</a>等；</p>
+<p>Tomcat作为独立服务器：请求来自于web浏览器；</p>
+<p>Tomcat应该考虑工作情形并为相应情形下的请求分别定义好需要的连接器才能正确接收来自于客户端的请求。一个引擎可以有一个或多个连接器，以适应多种请求方式。</p>
+<p>定义连接器可以使用多种属性，有些属性也只适用于某特定的连接器类型。一般说来，常见于<code>server.xml</code>中的连接器类型通常有4种：</p>
+<blockquote>
+<ol>
+<li>HTTP连接器 </li>
+<li>SSL连接器 </li>
+<li>AJP 1.3连接器</li>
+<li>proxy连接器</li>
+</ol>
+</blockquote>
+<p>如上面示例server.xml中定义的HTTP连接器：</p>
+<p><code>&lt;Connector port=”8080″ protocol=”HTTP/1.1″ maxThreads=”150″ connectionTimeout=”20000″ redirectPort=”8443″/&gt;</code></p>
+<p>定义连接器时可以配置的属性非常多，但通常定义HTTP连接器时必须定义的属性只有“port“，定义AJP连接器时必须定义的属性只有”protocol”，因为默认的协议为HTTP。以下为常用属性的说明：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-number">1</span>) address：指定连接器监听的地址，默认为所有地址，即<span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>； 可以自己指定地，如<br><br><span class="hljs-number">2</span>) maxThreads：支持的最大并发连接数，默认为<span class="hljs-number">200</span>；<br><br><span class="hljs-number">3</span>) port：监听的端口，默认为<span class="hljs-number">0</span>；<br><br><span class="hljs-number">4</span>) protocol：连接器使用的协议，默认为HTTP/<span class="hljs-number">1.1</span>，定义AJP协议时通常为AJP/<span class="hljs-number">1.3</span>；<br><br><span class="hljs-number">5</span>) redirectPort：如果某连接器支持的协议是HTTP，当接收客户端发来的HTTPS请求时，则转发至此属性定义的端口；<br><br><span class="hljs-number">6</span>) connectionTimeout：等待客户端发送请求的超时时间，单位为毫秒，默认为<span class="hljs-number">60000</span>，即<span class="hljs-number">1</span>分钟；<br><br><span class="hljs-number">7</span>) enableLookups：是否通过request.getRemoteHost()进行DNS查询以获取客户端的主机名；默认为<span class="hljs-literal">true</span>； 进行反解的，可以设置为<span class="hljs-literal">false</span><br><br><span class="hljs-number">8</span>) acceptCount：设置等待队列的最大长度；通常在tomcat所有处理线程均处于繁忙状态时，新发来的请求将被放置于等待队列中；<br><br></code></pre></td></tr></table></figure>
+
+<p>下面是一个定义了多个属性的SSL连接器：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;Connector <span class="hljs-attribute">port</span>=”8443″<br><span class="hljs-attribute">maxThreads</span>=”150″ <span class="hljs-attribute">minSpareThreads</span>=”25″ <span class="hljs-attribute">maxSpareThreads</span>=”75″<br><span class="hljs-attribute">enableLookups</span>=”false” <span class="hljs-attribute">acceptCount</span>=”100″ <span class="hljs-attribute">debug</span>=”0″ <span class="hljs-attribute">scheme</span>=”https” <span class="hljs-attribute">secure</span>=”true”<br><span class="hljs-attribute">clientAuth</span>=”false” <span class="hljs-attribute">sslProtocol</span>=”TLS” /&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>4、Engine组件：</strong></p>
+<p>Engine是Servlet处理器的一个实例，即servlet引擎，默认为定义在server.xml中的Catalina。Engine需要defaultHost属性来为其定义一个接收所有发往非明确定义虚拟主机的请求的host组件。如前面示例中定义的：</p>
+<p><code>&lt;Engine name=”Catalina” defaultHost=”localhost”&gt;</code></p>
+<p>常用的属性定义：</p>
+<p><code>defaultHost：Tomcat</code>支持基于<code>FQDN</code>的虚拟主机，这些虚拟主机可以通过在<code>Engine</code>容器中定义多个不同的Host组件来实现；但如果此引擎的连接器收到一个发往非非明确定义虚拟主机的请求时则需要将此请求发往一个默认的虚拟主机进行处理，因此，在<code>Engine</code>中定义的多个虚拟主机的主机名称中至少要有一个跟<code>defaultHost</code>定义的主机名称同名；</p>
+<p><code>name：Engine</code>组件的名称，用于日志和错误信息记录时区别不同的引擎；</p>
+<p><code>Engine</code>容器中可以包含<code>Realm</code>、<code>Host</code>、<code>Listener</code>和<code>Valve</code>子容器。</p>
+<p><strong>5、Host组件：</strong></p>
+<p>位于<code>Engine</code>容器中用于接收请求并进行相应处理的主机或虚拟主机，如前面示例中的定义：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">Host</span> <span class="hljs-attr">name</span>=<span class="hljs-string">”localhost”</span> <span class="hljs-attr">appBase</span>=<span class="hljs-string">”webapps”</span></span><br><span class="hljs-tag"><span class="hljs-attr">unpackWARs</span>=<span class="hljs-string">”true”</span> <span class="hljs-attr">autoDeploy</span>=<span class="hljs-string">”true”</span></span><br><span class="hljs-tag"><span class="hljs-attr">xmlValidation</span>=<span class="hljs-string">”false”</span> <span class="hljs-attr">xmlNamespaceAware</span>=<span class="hljs-string">”false”</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Host</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>常用属性说明：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-number">1</span>) appBase：此Host的webapps目录，即存放非归档的web应用程序的目录或归档后的WAR文件的目录路径；可以使用基于$CATALINA_HOME的相对路径；<br><br><span class="hljs-number">2</span>) <span class="hljs-built_in">auto</span>Deploy：在Tomcat处于运行状态时放置于appBase目录中的应用程序文件是否自动进行deploy；默认为<span class="hljs-literal">true</span>；<br><br><span class="hljs-number">3</span>) unpackWars：在启用此webapps时是否对WAR格式的归档文件先进行展开；默认为<span class="hljs-literal">true</span>；<br></code></pre></td></tr></table></figure>
+<p>虚拟主机定义示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">Engine</span> <span class="hljs-attr">name</span>=<span class="hljs-string">”Catalina”</span> <span class="hljs-attr">defaultHost</span>=<span class="hljs-string">”localhost”</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Host</span> <span class="hljs-attr">name</span>=<span class="hljs-string">”localhost”</span> <span class="hljs-attr">appBase</span>=<span class="hljs-string">”webapps”</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">””</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”ROOT”/</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">”/bbs”</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”/web/bss”</span> 　#<span class="hljs-attr">path</span>路径是定义在<span class="hljs-attr">defaultHost</span>背后的</span><br><span class="hljs-tag"><span class="hljs-attr">reloadable</span>=<span class="hljs-string">”true”</span> <span class="hljs-attr">crossContext</span>=<span class="hljs-string">”true”/</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Host</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">Host</span> <span class="hljs-attr">name</span>=<span class="hljs-string">”mail.magedu.com”</span> <span class="hljs-attr">appBase</span>=<span class="hljs-string">”/web/mail”</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">””</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”ROOT”/</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Host</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Engine</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>主机别名定义：</p>
+<p>如果一个主机有两个或两个以上的主机名，额外的名称均可以以别名的形式进行定义，如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">Host</span> <span class="hljs-attr">name</span>=<span class="hljs-string">”www.ttlsa.com”</span> <span class="hljs-attr">appBase</span>=<span class="hljs-string">”webapps”</span> <span class="hljs-attr">unpackWARs</span>=<span class="hljs-string">”true”</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Alias</span>&gt;</span>feiyu.com<span class="hljs-tag">&lt;/<span class="hljs-name">Alias</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Host</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>6、Context组件：</p>
+<p>Context在某些意义上类似于apache中的路径别名，一个Context定义用于标识tomcat实例中的一个Web应用程序；如下面的定义：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">!–</span> <span class="hljs-attr">Tomcat</span> <span class="hljs-attr">Root</span> <span class="hljs-attr">Context</span> –&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">””</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”/web/webapps”/</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">!–</span> <span class="hljs-attr">buzzin</span> <span class="hljs-attr">webapp</span> –&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">”/bbs”</span></span><br><span class="hljs-tag"><span class="hljs-attr">docBase</span>=<span class="hljs-string">”/web/threads/bbs”</span></span><br><span class="hljs-tag"><span class="hljs-attr">reloadable</span>=<span class="hljs-string">”true”</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Context</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">!–</span> <span class="hljs-attr">chat</span> <span class="hljs-attr">server</span> –&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">”/chat”</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”/web/chat”/</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">!–</span> <span class="hljs-attr">darian</span> <span class="hljs-attr">web</span> –&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">”/darian”</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”darian”/</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>在Tomcat6中，每一个<code>context</code>定义也可以使用一个单独的<code>XML</code>文件进行，其文件的目录为<code>$CATALINA_HOME/conf//</code>。可以用于<code>Context</code>中的<code>XML</code>元素有<code>Loader</code>，<code>Manager</code>，<code>Realm</code>，<code>Resources</code>和<code>WatchedResource</code>。</p>
+<p>常用的属性定义有：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-number">1</span>) docBase：相应的Web应用程序的存放位置；也可以使用相对路径，起始路径为此Context所属Host中appBase定义的路径；切记，docBase的路径名不能与相应的Host中appBase中定义的路径名有包含关系，比如，如果appBase为deploy，而docBase绝不能为deploy-bbs类的名字；<br><br><span class="hljs-number">2</span>) path：相对于Web服务器根路径而言的URI；如果为空“”，则表示为此webapp的根路径；如果context定义在一个单独的xml文件中，此属性不需要定义，有可能是别名；<br><br><span class="hljs-number">3</span>) reloadable：是否允许重新加载此context相关的Web应用程序的类；默认为<span class="hljs-literal">false</span>；<br></code></pre></td></tr></table></figure>
+
+<p>7、Realm组件：</p>
+<p>一个<code>Realm</code>表示一个安全上下文，它是一个授权访问某个给定<code>Context</code>的用户列表和某用户所允许切换的角色相关定义的列表。因此，<code>Realm</code>就像是一个用户和组相关的数据库。定义<code>Realm</code>时惟一必须要提供的属性是<code>classname</code>，它是<code>Realm</code>的多个不同实现，用于表示此<code>Realm</code>认证的用户及角色等认证信息的存放位置。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><br><span class="hljs-keyword">JAASRealm：基于Java </span>Authintication <span class="hljs-keyword">and </span>Authorization Service实现用户认证；<br><br><span class="hljs-keyword">JDBCRealm：通过JDBC访问某关系型数据库表实现用户认证；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">JNDIRealm：基于JNDI使用目录服务实现认证信息的获取；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">MemoryRealm：查找tomcat-user.xml文件实现用户信息的获取；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">UserDatabaseRealm：基于UserDatabase文件(通常是tomcat-user.xml)实现用户认证，它实现是一个完全可更新和持久有效的MemoryRealm，因此能够跟标准的MemoryRealm兼容；它通过JNDI实现；</span><br><span class="hljs-keyword"></span><br></code></pre></td></tr></table></figure>
+<p>下面是一个常见的使用UserDatabase的配置：</p>
+<p><code>&lt;Realm className=”org.apache.catalina.realm.UserDatabaseRealm” resourceName=”UserDatabase”/&gt;</code></p>
+<p>下面是一个使用JDBC方式获取用户认证信息的配置：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;Realm <span class="hljs-attribute">className</span>=”org.apache.catalina.realm.JDBCRealm” <span class="hljs-attribute">debug</span>=”99″<br><span class="hljs-attribute">driverName</span>=”org.gjt.mm.mysql.Driver”<br><span class="hljs-attribute">connectionURL</span>=”jdbc:mysql://localhost/authority”<br><span class="hljs-attribute">connectionName</span>=”test” <span class="hljs-attribute">connectionPassword</span>=”test”<br><span class="hljs-attribute">userTable</span>=”users” <span class="hljs-attribute">userNameCol</span>=”user_name”<br><span class="hljs-attribute">userCredCol</span>=”user_pass”<br><span class="hljs-attribute">userRoleTable</span>=”user_roles” <span class="hljs-attribute">roleNameCol</span>=”role_name” /&gt;<br><br></code></pre></td></tr></table></figure>
+
+<p>8、Valve组件：</p>
+<p><code>Valve</code>类似于过滤器，它可以工作于<code>Engine</code>和<code>Host/Context</code>之间、<code>Host</code>和<code>Context</code>之间以及<code>Context</code>和<code>Web</code>应用程序的某资源之间。一个容器内可以建立多个<code>Valve</code>，而且<code>Valve</code>定义的次序也决定了它们生效的次序。Tomcat6中实现了多种不同的<code>Valve</code>：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">AccessLogValve：访问日志Valve<br><br><span class="hljs-keyword">ExtendedAccessValve：扩展功能的访问日志Valve</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">JDBCAccessLogValve：通过JDBC将访问日志信息发送到数据库中；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">RequestDumperValve：请求转储Valve；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">RemoteAddrValve：基于远程地址的访问控制；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">RemoteHostValve：基于远程主机名称的访问控制；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">SemaphoreValve：用于控制Tomcat主机上任何容器上的并发访问数量；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">JvmRouteBinderValve：在配置多个Tomcat为以Apache通过mod_proxy或mod_jk作为前端的集群架构中，当期望停止某节点时，可以通过此Valve将用记请求定向至备用节点；使用此Valve，必须使JvmRouteSessionIDBinderListener；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">ReplicationValve：专用于Tomcat集群架构中，可以在某个请求的session信息发生更改时触发session数据在各节点间进行复制；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">SingleSignOn：将两个或多个需要对用户进行认证webapp在认证用户时连接在一起，即一次认证即可访问所有连接在一起的webapp；</span><br><span class="hljs-keyword"></span><br><span class="hljs-keyword">ClusterSingleSingOn：对SingleSignOn的扩展，专用于Tomcat集群当中，需要结合ClusterSingleSignOnListener进行工作；</span><br></code></pre></td></tr></table></figure>
+<p><code>RemoteHostValve</code>和<code>RemoteAddrValve</code>可以分别用来实现基于主机名称和基于<code>IP</code>地址的访问控制，控制本身可以通过<code>allow</code>或<code>deny</code>来进行定义，这有点类似于<code>Apache</code>的访问控制功能；如下面的<code>Valve</code>则实现了仅允许本机访问<code>/probe</code>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">Context</span> <span class="hljs-attr">path</span>=<span class="hljs-string">”/probe”</span> <span class="hljs-attr">docBase</span>=<span class="hljs-string">”probe”</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">Valve</span> <span class="hljs-attr">className</span>=<span class="hljs-string">”org.apache.catalina.valves.RemoteAddrValve”</span></span><br><span class="hljs-tag"><span class="hljs-attr">allow</span>=<span class="hljs-string">”127\.0\.0\.1″/</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">Context</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>***　</p>
+
+      </section>
+      <section class="extra">
+        
+        <ul class="copyright">
+  
+  <li><strong>本文作者：</strong>silin Zreo</li>
+  <li><strong>本文链接：</strong><a href="http://blog.ggcmll.xyz/2021/03/14/%E5%85%B3%E4%BA%8Etomcat%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/index.html">http://blog.ggcmll.xyz/2021/03/14/%E5%85%B3%E4%BA%8Etomcat%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/index.html</a></li>
+  <li><strong>版权声明：</strong>本博客所有文章均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
+      rel="external nofollow" target="_blank"> BY-NC-SA </a>许可协议，转载请注明出处！</li>
+  
+</ul>
+        
+        
+        <section class="donate">
+  <div class="qrcode">
+    <img   class="lazyload" data-original="/images/icons/apay.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a></li></ul>
+
+        
+<nav class="nav">
+  
+    <a href="/2021/03/20/Mybatis-plus%E4%B9%8B%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/"><i class="iconfont iconleft"></i>Mybatis-plus之代码生成器</a>
+  
+  
+    <a href="/2020/12/12/SpringBoot%E6%95%B4%E5%90%88Undertow%E5%AE%B9%E5%99%A8/">SpringBoot整合Undertow容器<i class="iconfont iconright"></i></a>
+  
+</nav>
+
+      </section>
+      
+      <section class="comments">
+  
+  <div class="btn" id="comments-btn">查看评论</div>
+  
+  
+</section>
+      
+    </section>
+  </div>
+</article>
+  </div>
+</main>
+  <footer class="footer">
+  <div class="footer-social">
+    
+    
+    
+    
+    
+    <a href="tencent://message/?Menu=yes&uin=1171087511 " target="_blank" onMouseOver="this.style.color= '#12B7F5'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconQQ "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="javascript:; " target="_blank" onMouseOver="this.style.color= '#09BB07'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconwechat-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="https://github.com/silin528 " target="_blank" onMouseOver="this.style.color= '#24292E'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  icongithub-fill "></i>
+    </a>
+    
+    
+    
+    
+    
+    <a href="silin_liu528@126.com " target="_blank" onMouseOver="this.style.color='#FFBE5B'"
+      onMouseOut="this.style.color='#33333D'">
+      <i class="iconfont footer-social-item  iconmail"></i>
+    </a>
+    
+  </div>
+  <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  <div class="fab fab-daovoice">
+    <i class="iconfont iconcomment"></i>
+  </div>
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+</body>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/modules.js"></script>
+<script src="/js/zui.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i["DaoVoiceObject"] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    a.charset = "utf-8";
+    m.parentNode.insertBefore(a, m)
+  })(window, document, "script", ('https:' == document.location.protocol ? 'https:' : 'http:') +
+    "//widget.daovoice.io/widget/0f81ff2f.js", "daovoice")
+  daovoice('init', {
+    app_id: "abcdefg"
+  }, {
+    launcher: {
+      disableLauncherIcon: true,
+    },
+  });
+  daovoice('update');
+</script>
+
+
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4c204d8bc027a0455b5fc642ac334ca8";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+
+
+
+
+</html>
